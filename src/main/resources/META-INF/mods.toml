@@ -1,0 +1,24 @@
+modLoader="javafml"
+loaderVersion="[45,)"
+license="Academic Free License v3.0"
+
+[[mods]]
+modId="extra_attributes"
+version="1.5"
+displayName="Extra Attributes"
+credits="Created using mod maker MCreator - https://mcreator.net/about"
+displayURL="https://www.curseforge.com/minecraft/mc-mods/extra-attributes"
+updateJSONURL="https://legacy.curseforge.com/minecraft/mc-mods/extra-attributes"
+authors="McModded114"
+description="Was bored and thought I'd add a few attributes that can be used for modpacks to spice up pvp. By default the player doesn't have the attributes but in the future possibly              "
+
+[[dependencies.extra_attributes]]
+    modId="minecraft"
+    mandatory=true
+    versionRange="[1.19.4]"
+    ordering="NONE"
+    side="BOTH"
+
+
+
+
