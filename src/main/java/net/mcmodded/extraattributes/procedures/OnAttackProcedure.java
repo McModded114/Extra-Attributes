@@ -18,13 +18,12 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.damagesource.DamageTypes;
+import net.minecraft.world.damagesource.EntityDamageSource;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.network.chat.Component;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.BlockPos;
 
@@ -56,25 +55,7 @@ public class OnAttackProcedure {
 					&& ((LivingEntity) sourceentity).getAttribute(ForgeRegistries.ATTRIBUTES.getValue(new ResourceLocation("extra_attributes:bleeddamage"))) != null) {
 				if (Math.random() < ((LivingEntity) sourceentity).getAttribute(ForgeRegistries.ATTRIBUTES.getValue(new ResourceLocation("extra_attributes:bleedchance"))).getValue() / 100) {
 					if (entity instanceof LivingEntity _entity)
-						_entity.hurt(new DamageSource(_entity.level.registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getHolderOrThrow(DamageTypes.GENERIC)) {
-							@Override
-							public Component getLocalizedDeathMessage(LivingEntity _msgEntity) {
-								String _translatekey = "death.attack." + "bleed";
-								if (this.getEntity() == null && this.getDirectEntity() == null) {
-									return _msgEntity.getKillCredit() != null
-											? Component.translatable(_translatekey + ".player", _msgEntity.getDisplayName(), _msgEntity.getKillCredit().getDisplayName())
-											: Component.translatable(_translatekey, _msgEntity.getDisplayName());
-								} else {
-									Component _component = this.getEntity() == null ? this.getDirectEntity().getDisplayName() : this.getEntity().getDisplayName();
-									ItemStack _itemstack = ItemStack.EMPTY;
-									if (this.getEntity() instanceof LivingEntity _livingentity)
-										_itemstack = _livingentity.getMainHandItem();
-									return !_itemstack.isEmpty() && _itemstack.hasCustomHoverName()
-											? Component.translatable(_translatekey + ".item", _msgEntity.getDisplayName(), _component, _itemstack.getDisplayName())
-											: Component.translatable(_translatekey, _msgEntity.getDisplayName(), _component);
-								}
-							}
-						}, (float) (((entity instanceof LivingEntity _livEnt ? _livEnt.getMaxHealth() : -1) / 100)
+						_entity.hurt(new DamageSource("bleed").bypassArmor(), (float) (((entity instanceof LivingEntity _livEnt ? _livEnt.getMaxHealth() : -1) / 100)
 								* ((LivingEntity) sourceentity).getAttribute(ForgeRegistries.ATTRIBUTES.getValue(new ResourceLocation("extra_attributes:bleeddamage"))).getValue()));
 					if (entity instanceof LivingEntity && ((LivingEntity) sourceentity).getAttribute(ForgeRegistries.ATTRIBUTES.getValue(new ResourceLocation("extra_attributes:lifestealchance"))) != null && entity instanceof LivingEntity
 							&& ((LivingEntity) sourceentity).getAttribute(ForgeRegistries.ATTRIBUTES.getValue(new ResourceLocation("extra_attributes:lifestealdamage"))) != null) {
@@ -101,25 +82,7 @@ public class OnAttackProcedure {
 					if (world instanceof ServerLevel _level)
 						_level.sendParticles(ParticleTypes.CRIT, (entity.getX()), (entity.getY()), (entity.getZ()), 1, 1, 2, 1, 1);
 					if (entity instanceof LivingEntity _entity)
-						_entity.hurt(new DamageSource(_entity.level.registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getHolderOrThrow(DamageTypes.GENERIC)) {
-							@Override
-							public Component getLocalizedDeathMessage(LivingEntity _msgEntity) {
-								String _translatekey = "death.attack." + "critdamage";
-								if (this.getEntity() == null && this.getDirectEntity() == null) {
-									return _msgEntity.getKillCredit() != null
-											? Component.translatable(_translatekey + ".player", _msgEntity.getDisplayName(), _msgEntity.getKillCredit().getDisplayName())
-											: Component.translatable(_translatekey, _msgEntity.getDisplayName());
-								} else {
-									Component _component = this.getEntity() == null ? this.getDirectEntity().getDisplayName() : this.getEntity().getDisplayName();
-									ItemStack _itemstack = ItemStack.EMPTY;
-									if (this.getEntity() instanceof LivingEntity _livingentity)
-										_itemstack = _livingentity.getMainHandItem();
-									return !_itemstack.isEmpty() && _itemstack.hasCustomHoverName()
-											? Component.translatable(_translatekey + ".item", _msgEntity.getDisplayName(), _component, _itemstack.getDisplayName())
-											: Component.translatable(_translatekey, _msgEntity.getDisplayName(), _component);
-								}
-							}
-						}, (float) (((LivingEntity) sourceentity).getAttribute(net.minecraft.world.entity.ai.attributes.Attributes.ATTACK_DAMAGE).getValue()
+						_entity.hurt(new DamageSource("critdamage").bypassArmor(), (float) (((LivingEntity) sourceentity).getAttribute(net.minecraft.world.entity.ai.attributes.Attributes.ATTACK_DAMAGE).getValue()
 								* (((LivingEntity) sourceentity).getAttribute(ForgeRegistries.ATTRIBUTES.getValue(new ResourceLocation("extra_attributes:critdamage"))).getValue() / 100)));
 					if (entity instanceof LivingEntity && ((LivingEntity) sourceentity).getAttribute(ForgeRegistries.ATTRIBUTES.getValue(new ResourceLocation("extra_attributes:lifestealchance"))) != null && entity instanceof LivingEntity
 							&& ((LivingEntity) sourceentity).getAttribute(ForgeRegistries.ATTRIBUTES.getValue(new ResourceLocation("extra_attributes:lifestealdamage"))) != null) {
@@ -158,25 +121,7 @@ public class OnAttackProcedure {
 					&& ((LivingEntity) entity).getAttribute(ForgeRegistries.ATTRIBUTES.getValue(new ResourceLocation("extra_attributes:reflectdamage"))) != null) {
 				if (Math.random() < ((LivingEntity) entity).getAttribute(ForgeRegistries.ATTRIBUTES.getValue(new ResourceLocation("extra_attributes:reflectchance"))).getValue() / 100) {
 					if (sourceentity instanceof LivingEntity _entity)
-						_entity.hurt(new DamageSource(_entity.level.registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getHolderOrThrow(DamageTypes.GENERIC)) {
-							@Override
-							public Component getLocalizedDeathMessage(LivingEntity _msgEntity) {
-								String _translatekey = "death.attack." + "reflect";
-								if (this.getEntity() == null && this.getDirectEntity() == null) {
-									return _msgEntity.getKillCredit() != null
-											? Component.translatable(_translatekey + ".player", _msgEntity.getDisplayName(), _msgEntity.getKillCredit().getDisplayName())
-											: Component.translatable(_translatekey, _msgEntity.getDisplayName());
-								} else {
-									Component _component = this.getEntity() == null ? this.getDirectEntity().getDisplayName() : this.getEntity().getDisplayName();
-									ItemStack _itemstack = ItemStack.EMPTY;
-									if (this.getEntity() instanceof LivingEntity _livingentity)
-										_itemstack = _livingentity.getMainHandItem();
-									return !_itemstack.isEmpty() && _itemstack.hasCustomHoverName()
-											? Component.translatable(_translatekey + ".item", _msgEntity.getDisplayName(), _component, _itemstack.getDisplayName())
-											: Component.translatable(_translatekey, _msgEntity.getDisplayName(), _component);
-								}
-							}
-						}, (float) ((((LivingEntity) entity).getAttribute(net.minecraft.world.entity.ai.attributes.Attributes.ATTACK_DAMAGE).getValue() / 100)
+						_entity.hurt(new DamageSource("reflect").bypassArmor(), (float) ((((LivingEntity) entity).getAttribute(net.minecraft.world.entity.ai.attributes.Attributes.ATTACK_DAMAGE).getValue() / 100)
 								* ((LivingEntity) entity).getAttribute(ForgeRegistries.ATTRIBUTES.getValue(new ResourceLocation("extra_attributes:reflectdamage"))).getValue()));
 				}
 			}
@@ -224,12 +169,36 @@ public class OnAttackProcedure {
 				if (Math.random() < ((LivingEntity) sourceentity).getAttribute(ForgeRegistries.ATTRIBUTES.getValue(new ResourceLocation("extra_attributes:lightningchance"))).getValue() / 100) {
 					if (world instanceof ServerLevel _level) {
 						LightningBolt entityToSpawn = EntityType.LIGHTNING_BOLT.create(_level);
-						entityToSpawn.moveTo(Vec3.atBottomCenterOf(BlockPos.containing(entity.getX(), entity.getY(), entity.getZ())));
+						entityToSpawn.moveTo(Vec3.atBottomCenterOf(new BlockPos(entity.getX(), entity.getY(), entity.getZ())));
 						entityToSpawn.setVisualOnly(true);
 						_level.addFreshEntity(entityToSpawn);
 					}
-					entity.hurt(new DamageSource(world.registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getHolderOrThrow(DamageTypes.LIGHTNING_BOLT)),
-							(float) ((LivingEntity) sourceentity).getAttribute(ForgeRegistries.ATTRIBUTES.getValue(new ResourceLocation("extra_attributes:lightningdamage"))).getValue());
+					entity.hurt(((new EntityDamageSource("lightningBolt", sourceentity) {
+						@Override
+						public Component getLocalizedDeathMessage(LivingEntity _livingEntity) {
+							Component _attackerName = null;
+							Component _entityName = _livingEntity.getDisplayName();
+							Component _itemName = null;
+							Entity _attacker = this.getEntity();
+							ItemStack _itemStack = ItemStack.EMPTY;
+							if (_attacker != null) {
+								_attackerName = _attacker.getDisplayName();
+							}
+							if (_attacker instanceof LivingEntity _livingAttacker) {
+								_itemStack = _livingAttacker.getMainHandItem();
+							}
+							if (!_itemStack.isEmpty() && _itemStack.hasCustomHoverName()) {
+								_itemName = _itemStack.getDisplayName();
+							}
+							if (_attacker != null && _itemName != null) {
+								return Component.translatable("death.attack." + "lightningBolt.player", _entityName, _attackerName, _itemName);
+							} else if (_attacker != null) {
+								return Component.translatable("death.attack." + "lightningBolt.player", _entityName, _attackerName);
+							} else {
+								return Component.translatable("death.attack." + "lightningBolt", _entityName);
+							}
+						}
+					})), (float) ((LivingEntity) sourceentity).getAttribute(ForgeRegistries.ATTRIBUTES.getValue(new ResourceLocation("extra_attributes:lightningdamage"))).getValue());
 					if (entity instanceof LivingEntity && ((LivingEntity) sourceentity).getAttribute(ForgeRegistries.ATTRIBUTES.getValue(new ResourceLocation("extra_attributes:lifestealchance"))) != null && entity instanceof LivingEntity
 							&& ((LivingEntity) sourceentity).getAttribute(ForgeRegistries.ATTRIBUTES.getValue(new ResourceLocation("extra_attributes:lifestealdamage"))) != null) {
 						if (Math.random() < ((LivingEntity) sourceentity).getAttribute(ForgeRegistries.ATTRIBUTES.getValue(new ResourceLocation("extra_attributes:lifestealchance"))).getValue() / 100) {
@@ -256,25 +225,7 @@ public class OnAttackProcedure {
 									if (world instanceof ServerLevel _level)
 										_level.sendParticles(ParticleTypes.SWEEP_ATTACK, (entityiterator.getX()), (entityiterator.getY()), (entityiterator.getZ()), 1, 1, 2, 1, 1);
 									if (entityiterator instanceof LivingEntity _entity)
-										_entity.hurt(new DamageSource(_entity.level.registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getHolderOrThrow(DamageTypes.GENERIC)) {
-											@Override
-											public Component getLocalizedDeathMessage(LivingEntity _msgEntity) {
-												String _translatekey = "death.attack." + "SWEEP";
-												if (this.getEntity() == null && this.getDirectEntity() == null) {
-													return _msgEntity.getKillCredit() != null
-															? Component.translatable(_translatekey + ".player", _msgEntity.getDisplayName(), _msgEntity.getKillCredit().getDisplayName())
-															: Component.translatable(_translatekey, _msgEntity.getDisplayName());
-												} else {
-													Component _component = this.getEntity() == null ? this.getDirectEntity().getDisplayName() : this.getEntity().getDisplayName();
-													ItemStack _itemstack = ItemStack.EMPTY;
-													if (this.getEntity() instanceof LivingEntity _livingentity)
-														_itemstack = _livingentity.getMainHandItem();
-													return !_itemstack.isEmpty() && _itemstack.hasCustomHoverName()
-															? Component.translatable(_translatekey + ".item", _msgEntity.getDisplayName(), _component, _itemstack.getDisplayName())
-															: Component.translatable(_translatekey, _msgEntity.getDisplayName(), _component);
-												}
-											}
-										}, (float) (((LivingEntity) sourceentity).getAttribute(net.minecraft.world.entity.ai.attributes.Attributes.ATTACK_DAMAGE).getValue()
+										_entity.hurt(new DamageSource("SWEEP").bypassArmor(), (float) (((LivingEntity) sourceentity).getAttribute(net.minecraft.world.entity.ai.attributes.Attributes.ATTACK_DAMAGE).getValue()
 												* (((LivingEntity) sourceentity).getAttribute(ForgeRegistries.ATTRIBUTES.getValue(new ResourceLocation("extra_attributes:sweepdamage"))).getValue() / 100)));
 									if (entity instanceof LivingEntity && ((LivingEntity) sourceentity).getAttribute(ForgeRegistries.ATTRIBUTES.getValue(new ResourceLocation("extra_attributes:lifestealchance"))) != null
 											&& entity instanceof LivingEntity && ((LivingEntity) sourceentity).getAttribute(ForgeRegistries.ATTRIBUTES.getValue(new ResourceLocation("extra_attributes:lifestealdamage"))) != null) {

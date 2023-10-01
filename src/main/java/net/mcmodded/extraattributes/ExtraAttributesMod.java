@@ -45,6 +45,7 @@ public class ExtraAttributesMod {
 
 	public ExtraAttributesMod() {
 		MinecraftForge.EVENT_BUS.register(this);
+
 		IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
 
 	}
